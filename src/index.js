@@ -1,11 +1,15 @@
-const express = require("express")
+import express, { json } from "express";
+import dotenv from 'dotenv';
+
+dotenv.config();
+
 const app = express()
 const port = 3000
 
-app.use(express.json());
+app.use(json());
 
 app.get("/", (req, res) => {
-    res.send("olá, mundo!")
+    res.send(`${process.env.DB_URL}`)
 })
 
 app.post("/cadastro", (req, res) => {
