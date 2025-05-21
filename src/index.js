@@ -12,5 +12,5 @@ app.use(json());
 app.use("/", customerRoute)
 
 app.listen(port, () => {
-    console.log(`App está executando na porta ${port}. \ndotenv: ${process.env.DB_URL}`)
+    console.log(`App está executando na porta ${port}.`)
 })

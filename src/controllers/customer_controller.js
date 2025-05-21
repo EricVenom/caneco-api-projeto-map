@@ -33,4 +33,5 @@ const cadastrarCliente = async (req, res) => {
     }
 }
 
+
 export default cadastrarCliente
