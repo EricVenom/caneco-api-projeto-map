@@ -1,5 +1,6 @@
 import express, { json } from "express";
 import dotenv from 'dotenv';
+import customerRoute from './routes/customer_route.js';
 
 dotenv.config();
 
@@ -8,17 +9,8 @@ const port = 3000
 
 app.use(json());
 
-app.get("/", (req, res) => {
-    res.send(`${process.env.DB_URL}`)
-})
-
-app.post("/cadastro", (req, res) => {
-    const { nome, email } = req.body
-    return res.json({
-        nome, email
-    })
-})
+app.use("/", customerRoute)
 
 app.listen(port, () => {
-    console.log(`App está executando na porta ${port}.`)
+    console.log(`App está executando na porta ${port}. \ndotenv: ${process.env.DB_URL}`)
 })
