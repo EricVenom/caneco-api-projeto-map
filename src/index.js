@@ -1,6 +1,7 @@
 import express, { json } from "express";
 import dotenv from 'dotenv';
 import customerRoute from './routes/customer_route.js';
+import categoryRoute from './routes/category_route.js';
 
 dotenv.config();
 
@@ -9,7 +10,8 @@ const port = 3000
 
 app.use(json());
 
-app.use("/", customerRoute)
+app.use("/", customerRoute);
+app.use("/", categoryRoute);
 
 app.listen(port, () => {
     console.log(`App está executando na porta ${port}.`)
