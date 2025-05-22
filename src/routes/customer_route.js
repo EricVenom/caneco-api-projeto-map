@@ -1,8 +1,8 @@
 import { Router } from "express";
-import cadastrarCliente from "../controllers/customer_controller.js"
+import cadastrarCliente from "../controllers/customer_controller.js";
 
-const router = Router()
+const router = Router();
 
-router.post("/cadastrar-cliente", cadastrarCliente)
+router.post("/cadastrar-cliente", cadastrarCliente);
 
-export default router
+export default router;
