@@ -6,7 +6,8 @@
 `docker-compose up -d` 
 
 # O sistema precisa:
-- [ ] logar adm/operador
+- [x] cadastrar adm/operador
+- [x] logar adm/operador
 - [ ] mostrar saldo no caixa do adm/operador
 - [ ] adicionar/subtrair do caixa
 - [ ] mostrar historico de vendas
@@ -22,5 +23,4 @@
    - se cobriu tudo: adicionar nova linha com status "FINALIZADO"
    - se está em andamento e não terminar de pagar: adicionar nova linha com status "CANCELADO"
       - neste caso extorna o valor previamente pago ("em andamento")
-      - cancela e devolve todos os itens
-      
+      - cancela e devolve todos os itens (delete rows de tb_sale)
