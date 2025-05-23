@@ -8,6 +8,7 @@
 # O sistema precisa:
 - [x] cadastrar adm/operador
 - [x] logar adm/operador
+
 - [ ] mostrar saldo no caixa do adm/operador
 - [ ] adicionar/subtrair do caixa
 - [ ] mostrar historico de vendas
