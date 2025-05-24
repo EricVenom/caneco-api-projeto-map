@@ -9,11 +9,10 @@
 - [x] cadastrar adm/operador
 - [x] logar adm/operador
 
-- [ ] mostrar saldo no caixa do adm/operador
-- [ ] adicionar/subtrair do caixa
+- [X] mostrar saldo no caixa do adm/operador
+- [X] adicionar/subtrair do caixa
 - [ ] mostrar historico de vendas
 - [ ] fechar registro diario (GERAR NOTA FISCAL - talvez mandar por email pro adm/operador - BRIDGE)
-
 - [x] listar categorias
 - [x] listar produtos por categoria (ex: categoria bebidas mostraria todas as bebidas)
 - [ ] salvar status do método de pagamento - EM ANDAMENTO...
