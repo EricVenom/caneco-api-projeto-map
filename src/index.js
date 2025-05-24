@@ -1,6 +1,6 @@
 import express, { json } from "express";
 import dotenv from 'dotenv';
-import customerRoute from './routes/customer_route.js';
+import customerRoute from './routes/costumer_route.js';
 import categoryRoute from './routes/category_route.js';
 import checkoutRoute from './routes/checkout_route.js';
 import adminRoute from './routes/admin_route.js';

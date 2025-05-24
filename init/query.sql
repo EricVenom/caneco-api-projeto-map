@@ -2,7 +2,7 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- Tabela de cliente
-CREATE TABLE IF NOT EXISTS tb_customer (
+CREATE TABLE IF NOT EXISTS tb_costumer (
     cpf VARCHAR(14) PRIMARY KEY,
     first_name VARCHAR(45),
     last_name VARCHAR(45)
@@ -11,14 +11,14 @@ CREATE TABLE IF NOT EXISTS tb_customer (
 -- Tabela de checkout
 CREATE TABLE IF NOT EXISTS tb_checkout (
     checkout_code UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    customer_cpf VARCHAR(14),
+    costumer_cpf VARCHAR(14),
     sale_day VARCHAR(2),
     sale_month VARCHAR(2),
     sale_year VARCHAR(4),
     sale_hour VARCHAR(2),
     sale_minute VARCHAR(2),
     total_price DOUBLE PRECISION,
-    FOREIGN KEY (customer_cpf) REFERENCES tb_customer(cpf)
+    FOREIGN KEY (costumer_cpf) REFERENCES tb_costumer(cpf)
 );
 
 -- Tabela de categoria

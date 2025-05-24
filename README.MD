@@ -11,7 +11,8 @@
 
 - [X] mostrar saldo no caixa do adm/operador
 - [X] adicionar/subtrair do caixa
-- [ ] mostrar historico de vendas
+- [X] mostrar historico de vendas (20 ultimas)
+- [X] exibir nota fiscal individual (cada venda)
 - [ ] fechar registro diario (GERAR NOTA FISCAL - talvez mandar por email pro adm/operador - BRIDGE)
 - [x] listar categorias
 - [x] listar produtos por categoria (ex: categoria bebidas mostraria todas as bebidas)
