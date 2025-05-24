@@ -11,7 +11,7 @@ const cadastrarCliente = async (req, res) => {
 
     try {
         const query = `
-            INSERT INTO tb_customer (cpf, first_name, last_name)
+            INSERT INTO tb_costumer (cpf, first_name, last_name)
             VALUES ($1, $2, $3)
             RETURNING *;
         `

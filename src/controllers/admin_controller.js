@@ -65,3 +65,71 @@ export const logarOperador = async (req, res) => {
         console.error(error);
     }
 }
+
+export const mostrarInfoOperador = async (req, res) => {
+    const { cpf, first_name } = req.user;
+
+    const { rows: [cashier] } = await pool.query(`
+        SELECT total_checkout 
+        FROM tb_cashier
+        WHERE cpf = $1
+        `, [cpf]);
+
+    return res.status(200).json({ operador: { cpf, first_name, total_checkout: cashier.total_checkout } });
+}
+
+export const adicionarSaldoCaixa = async (req, res) => {
+    const { cpf } = req.user;
+    const { amount } = req.body;
+
+    try {
+        if (amount > 0) {
+            const query = `
+            UPDATE tb_cashier
+            SET total_checkout = total_checkout + $1
+            WHERE cpf = $2
+            RETURNING total_checkout;
+        `
+
+            const { rows: [result] } = await pool.query(query, [amount, cpf])
+            return res.status(200).json({ total_checkout: result.total_checkout });
+        }
+    } catch (error) {
+        return res.status(500).json(error)
+    }
+}
+
+export const substrairSaldoCaixa = async (req, res) => {
+    const { cpf } = req.user;
+    const { amount } = req.body;
+
+    try {
+        if (amount <= 0) {
+            return res.status(400).json({ error: "O valor deve ser maior que zero." });
+        }
+
+        const { rows: [cashier] } = await pool.query(`
+            SELECT total_checkout 
+            FROM tb_cashier 
+            WHERE cpf = $1
+        `, [cpf]);
+
+        const saldoAtual = cashier.total_checkout;
+
+        if (saldoAtual < amount) {
+            return res.status(400).json({ error: "Saldo insuficiente para essa operação." });
+        }
+
+        const { rows: [result] } = await pool.query(`
+            UPDATE tb_cashier
+            SET total_checkout = total_checkout - $1
+            WHERE cpf = $2
+            RETURNING total_checkout;
+        `, [amount, cpf]);
+
+        return res.status(200).json({ total_checkout: result.total_checkout });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Erro interno no servidor." });
+    }
+};

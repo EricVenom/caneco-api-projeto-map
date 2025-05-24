@@ -2,7 +2,7 @@ import pool from '../services/db.js';
 import { v4 as uuidv4 } from 'uuid';
 
 export const realizarCheckout = async (req, res) => {
-    const { customer_cpf, items } = req.body;
+    const { costumer_cpf, items } = req.body;
 
     if (!items || items.length === 0) {
         return res.status(400).json({ message: 'Carrinho vazio' });
@@ -24,7 +24,7 @@ export const realizarCheckout = async (req, res) => {
 
         const insertCheckoutQuery = `
         INSERT INTO tb_checkout (
-            checkout_code, customer_cpf, sale_day, sale_month, sale_year, sale_hour, sale_minute, total_price
+            checkout_code, costumer_cpf, sale_day, sale_month, sale_year, sale_hour, sale_minute, total_price
         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
         `;
 
@@ -46,7 +46,7 @@ export const realizarCheckout = async (req, res) => {
 
         await client.query(insertCheckoutQuery, [
             checkoutCode,
-            customer_cpf,
+            costumer_cpf,
             day,
             month,
             year,
@@ -83,5 +83,73 @@ export const realizarCheckout = async (req, res) => {
         return res.status(500).json({ message: 'Erro ao realizar checkout' });
     } finally {
         client.release();
+    }
+};
+
+
+export const mostrarHistoricoVendas = async (req, res) => {
+    const query = `
+        SELECT * FROM tb_checkout
+        ORDER BY concat(sale_year, sale_month, sale_day, sale_hour, sale_minute) DESC
+        LIMIT 20
+    `;
+    const { rows } = await pool.query(query);
+    return res.status(200).json(rows)
+};
+
+
+export const emitirNotaFiscal = async (req, res) => {
+    const { checkout_code } = req.params;
+
+    if (!checkout_code) {
+        return res.status(400).json({ error: "É necessário informar o checkout_code." });
+    }
+
+    try {
+        const { rows } = await pool.query(`
+            SELECT 
+                ch.checkout_code,
+                ch.costumer_cpf AS cpf,
+                CONCAT(ch.sale_year, '/', ch.sale_month, '/', ch.sale_day) AS sale_date,
+                CONCAT(ch.sale_hour, ':', ch.sale_minute) AS sale_time,
+                s.id_product,
+                p.name as product_name,
+                s.quantity,
+                p.price,
+                ch.total_price 
+            FROM tb_checkout ch
+            LEFT JOIN tb_sale s ON ch.checkout_code = s.checkout_code
+            LEFT JOIN tb_product p ON s.id_product = p.id_product
+            WHERE ch.checkout_code = $1;
+        `, [checkout_code]);
+
+        if (rows.length === 0) {
+            return res.status(404).json({ error: "Nota fiscal não encontrada para este checkout_code." });
+        }
+
+        const { cpf, checkout_code: code, sale_date, sale_time, total_price } = rows[0];
+
+        const produtos = rows
+            .filter(row => row.id_product !== null)
+            .map(row => ({
+                id_product: row.id_product,
+                product_name: row.product_name,
+                price_unit: row.price,
+                quantity: row.quantity
+            }));
+
+        const notaFiscal = {
+            client_cpf: cpf,
+            checkout_code: code,
+            sale_date,
+            sale_time,
+            total_price,
+            products: produtos
+        };
+
+        return res.status(200).json({ notaFiscal });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Erro interno no servidor." });
     }
 };
