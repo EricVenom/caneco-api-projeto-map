@@ -19,9 +19,4 @@
 - [X] salvar status do método de pagamento - EM ANDAMENTO...
 - [x] AO FECHAR O CARRINHO, SALVAR REGISTRO EM tb_checkout para gerar UUID:
    - [x] registrar venda de cada batch de produtos em tb_sale (vai precisar do UUID)
-- [X] não deixar finalizar compra se não pagar tudo:
-   - se pagamento não cobrir todo o valor: adicionar uma nova linha com status "EM ANDAMENTO"
-   - se cobriu tudo: adicionar nova linha com status "FINALIZADO"
-   - se está em andamento e não terminar de pagar: adicionar nova linha com status "CANCELADO"
-      - neste caso extorna o valor previamente pago ("em andamento")
-      - cancela e devolve todos os itens (delete rows de tb_sale)
+- [X] não deixar finalizar compra se não pagar tudo
