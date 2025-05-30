@@ -42,6 +42,9 @@ export const logarOperador = async (req, res) => {
             SELECT * FROM tb_cashier WHERE cpf = $1
         `
         const { rows: [cashier] } = await pool.query(query, [cpf]);
+        if (!cashier) {
+            res.status(404).json({ message: "Usuário não encontrado." })
+        }
 
         const senhaDecriptada = await bcrypt.compare(password, cashier.password);
         if (!senhaDecriptada) {
