@@ -87,6 +87,42 @@ export const realizarCheckout = async (req, res) => {
 };
 
 
+export const processarPagamento = async (req, res) => {
+    const { checkout_code } = req.params;
+    const { pagamentos } = req.body;
+
+    const client = await pool.connect();
+
+    try {
+        await client.query('BEGIN');
+
+        for (let pagamento = 0; pagamento < pagamentos.length; pagamento++) {
+            const { payment_method, payment_amount } = pagamentos[pagamento];
+            const status = pagamento === pagamentos.length - 1 ? 'FINALIZADO' : 'EM ANDAMENTO';
+
+            await client.query(
+                `
+                INSERT INTO tb_payment (checkout_code, payment_method, payment_amount, payment_status)
+                VALUES ($1, $2, $3, $4)
+                `,
+                [checkout_code, payment_method, payment_amount, status]
+            );
+        }
+
+        await client.query('COMMIT');
+
+        return res.status(200).json({ message: 'Pagamento realizado com sucesso.' });
+
+    } catch (error) {
+        await client.query('ROLLBACK');
+        console.error('Erro no processamento do pagamento:', error);
+        return res.status(500).json({ message: 'Erro no processamento do pagamento.' });
+    } finally {
+        client.release();
+    }
+};
+
+
 export const mostrarHistoricoVendas = async (req, res) => {
     const query = `
         SELECT * FROM tb_checkout
@@ -153,3 +189,4 @@ export const emitirNotaFiscal = async (req, res) => {
         return res.status(500).json({ error: "Erro interno no servidor." });
     }
 };
+
