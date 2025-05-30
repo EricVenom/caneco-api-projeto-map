@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { autenticarToken } from "../middlewares/auth_middleware.js"
+import { autenticarToken } from "../middlewares/auth_middleware.js";
 import {
     cadastrarNovoOperador,
     logarOperador,
