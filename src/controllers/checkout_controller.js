@@ -42,6 +42,11 @@ export const realizarCheckout = async (req, res) => {
 
             const price = result.rows[0].price;
             totalPrice += price * item.quantity;
+            
+            if (costumer_cpf){
+                //checar se tem no bd para aplicar o desconto
+                totalPrice = totalPrice * 0.95
+            }
         }
 
         await client.query(insertCheckoutQuery, [
