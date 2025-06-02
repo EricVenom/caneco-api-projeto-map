@@ -29,7 +29,7 @@ export const realizarCheckout = async (req, res) => {
         `;
 
         let totalPrice = 0;
-
+        let isCadastred = false;
         for (let item of items) {
             const result = await client.query(
                 'SELECT price FROM tb_product WHERE id_product = $1',
@@ -43,15 +43,21 @@ export const realizarCheckout = async (req, res) => {
             const price = result.rows[0].price;
             totalPrice += price * item.quantity;
             
-            if (costumer_cpf){
-                //checar se tem no bd para aplicar o desconto
-                totalPrice = totalPrice * 0.95
-            }
         }
+        if (costumer_cpf){
+                const desc = await client.query("SELECT * FROM tb_costumer WHERE cpf=$1",[costumer_cpf])
+                if (desc.rows.length != 0) {
+                    isCadastred = true;
+                    totalPrice = totalPrice * 0.95
+                }
+            }
+        
+        totalPrice = parseFloat((totalPrice).toFixed(2));
+        const cpfValido = isCadastred ? costumer_cpf : null;
 
         await client.query(insertCheckoutQuery, [
             checkoutCode,
-            costumer_cpf,
+            cpfValido,
             day,
             month,
             year,
