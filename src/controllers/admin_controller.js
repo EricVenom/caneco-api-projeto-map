@@ -2,6 +2,7 @@ import pool from '../services/db.js';
 import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import { formatarCPF } from '../utils/validators.js';
 
 dotenv.config();
 const senhaJwt = process.env.JWT_PASSWORD;
@@ -12,10 +13,12 @@ export const cadastrarNovoOperador = async (req, res) => {
         return res.status(401).json({ error: "Todos os campos devem ser preenchidos." });
     }
 
+    const cpfFormatado = formatarCPF(cpf)
+
     try {
         const senhaEncriptada = await bcrypt.hash(password, 10);
         const query = `INSERT INTO tb_cashier(cpf, password, first_name, total_checkout) VALUES ($1, $2, $3, $4) RETURNING *`;
-        const result = await pool.query(query, [cpf, senhaEncriptada, first_name, 0]);
+        const result = await pool.query(query, [cpfFormatado, senhaEncriptada, first_name, 0]);
 
         return res.status(201).json({
             message: "Operador(a) cadastrado(a) com sucesso.",
@@ -37,11 +40,13 @@ export const logarOperador = async (req, res) => {
         return res.status(401).json({ error: "É preciso preencher todos os campos." })
     }
 
+    const cpfFormatado = formatarCPF(cpf)
+
     try {
         const query = `
             SELECT * FROM tb_cashier WHERE cpf = $1
         `
-        const { rows: [cashier] } = await pool.query(query, [cpf]);
+        const { rows: [cashier] } = await pool.query(query, [cpfFormatado]);
         if (!cashier) {
             res.status(404).json({ message: "Usuário não encontrado." })
         }

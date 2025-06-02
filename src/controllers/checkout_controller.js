@@ -1,6 +1,7 @@
 import pool from '../services/db.js';
 import { v4 as uuidv4 } from 'uuid';
 import { calcularPrecoOriginal, aplicarDescontoParaClientesCadastrados } from '../utils/checkout_util.js';
+import {formatarCPF} from '../utils/validators.js';
 
 export const realizarCheckout = async (req, res) => {
     const { costumer_cpf, items } = req.body;
@@ -24,13 +25,15 @@ export const realizarCheckout = async (req, res) => {
         const minute = String(now.getMinutes()).padStart(2, '0');
 
         const calcularPrecoComDesconto = aplicarDescontoParaClientesCadastrados(calcularPrecoOriginal);
-        const totalPrice = await calcularPrecoComDesconto(client, items, costumer_cpf);
+
+        const cpfFormatado = await formatarCPF(costumer_cpf)
+        const totalPrice = await calcularPrecoComDesconto(client, items, cpfFormatado);
 
         let cpfValido = null;
-        if (costumer_cpf) {
+        if (cpfFormatado) {
             const { rows } = await client.query(
                 'SELECT cpf FROM tb_costumer WHERE cpf = $1',
-                [costumer_cpf]
+                [cpfFormatado]
             );
 
             if (rows.length > 0) {
