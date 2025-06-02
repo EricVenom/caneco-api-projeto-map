@@ -1,5 +1,7 @@
 import pool from '../services/db.js';
 import { v4 as uuidv4 } from 'uuid';
+import { calcularPrecoOriginal, aplicarDescontoParaClientesCadastrados } from '../utils/checkout_util.js';
+import {formatarCPF} from '../utils/validators.js';
 
 export const realizarCheckout = async (req, res) => {
     const { costumer_cpf, items } = req.body;
@@ -22,31 +24,32 @@ export const realizarCheckout = async (req, res) => {
         const hour = String(now.getHours()).padStart(2, '0');
         const minute = String(now.getMinutes()).padStart(2, '0');
 
-        const insertCheckoutQuery = `
-        INSERT INTO tb_checkout (
-            checkout_code, costumer_cpf, sale_day, sale_month, sale_year, sale_hour, sale_minute, total_price
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-        `;
+        const calcularPrecoComDesconto = aplicarDescontoParaClientesCadastrados(calcularPrecoOriginal);
 
-        let totalPrice = 0;
+        const cpfFormatado = await formatarCPF(costumer_cpf)
+        const totalPrice = await calcularPrecoComDesconto(client, items, cpfFormatado);
 
-        for (let item of items) {
-            const result = await client.query(
-                'SELECT price FROM tb_product WHERE id_product = $1',
-                [item.id_product]
+        let cpfValido = null;
+        if (cpfFormatado) {
+            const { rows } = await client.query(
+                'SELECT cpf FROM tb_costumer WHERE cpf = $1',
+                [cpfFormatado]
             );
 
-            if (result.rows.length === 0) {
-                throw new Error(`Produto com ID ${item.id_product} não encontrado`);
+            if (rows.length > 0) {
+                cpfValido = rows[0].cpf;
             }
-
-            const price = result.rows[0].price;
-            totalPrice += price * item.quantity;
         }
+
+        const insertCheckoutQuery = `
+            INSERT INTO tb_checkout (
+                checkout_code, costumer_cpf, sale_day, sale_month, sale_year, sale_hour, sale_minute, total_price
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        `;
 
         await client.query(insertCheckoutQuery, [
             checkoutCode,
-            costumer_cpf,
+            cpfValido,
             day,
             month,
             year,
@@ -55,10 +58,9 @@ export const realizarCheckout = async (req, res) => {
             totalPrice
         ]);
 
-
         const insertSaleQuery = `
-        INSERT INTO tb_sale (quantity, id_product, checkout_code)
-        VALUES ($1, $2, $3)
+            INSERT INTO tb_sale (quantity, id_product, checkout_code)
+            VALUES ($1, $2, $3)
         `;
 
         for (let item of items) {
@@ -71,10 +73,9 @@ export const realizarCheckout = async (req, res) => {
 
         await client.query('COMMIT');
 
-        return res.status(201).json({
-            message: 'Checkout realizado com sucesso',
-            checkout_code: checkoutCode,
-            total_price: totalPrice
+        return res.json({
+            total_price: totalPrice,
+            cpf: cpfValido
         });
 
     } catch (error) {
@@ -86,7 +87,6 @@ export const realizarCheckout = async (req, res) => {
     }
 };
 
-
 export const processarPagamento = async (req, res) => {
     const { checkout_code } = req.params;
     const { pagamentos } = req.body;
@@ -96,9 +96,9 @@ export const processarPagamento = async (req, res) => {
     try {
         await client.query('BEGIN');
 
-        for (let pagamento = 0; pagamento < pagamentos.length; pagamento++) {
-            const { payment_method, payment_amount } = pagamentos[pagamento];
-            const status = pagamento === pagamentos.length - 1 ? 'FINALIZADO' : 'EM ANDAMENTO';
+        for (let i = 0; i < pagamentos.length; i++) {
+            const { payment_method, payment_amount } = pagamentos[i];
+            const status = i === pagamentos.length - 1 ? 'FINALIZADO' : 'EM ANDAMENTO';
 
             await client.query(
                 `
@@ -122,17 +122,20 @@ export const processarPagamento = async (req, res) => {
     }
 };
 
-
 export const mostrarHistoricoVendas = async (req, res) => {
-    const query = `
-        SELECT * FROM tb_checkout
-        ORDER BY concat(sale_year, sale_month, sale_day, sale_hour, sale_minute) DESC
-        LIMIT 20
-    `;
-    const { rows } = await pool.query(query);
-    return res.status(200).json(rows)
+    try {
+        const query = `
+            SELECT * FROM tb_checkout
+            ORDER BY concat(sale_year, sale_month, sale_day, sale_hour, sale_minute) DESC
+            LIMIT 20
+        `;
+        const { rows } = await pool.query(query);
+        return res.status(200).json(rows);
+    } catch (error) {
+        console.error('Erro ao buscar histórico de vendas:', error);
+        return res.status(500).json({ message: 'Erro ao buscar histórico de vendas.' });
+    }
 };
-
 
 export const emitirNotaFiscal = async (req, res) => {
     const { checkout_code } = req.params;
@@ -185,8 +188,7 @@ export const emitirNotaFiscal = async (req, res) => {
 
         return res.status(200).json({ notaFiscal });
     } catch (error) {
-        console.error(error);
+        console.error('Erro ao emitir nota fiscal:', error);
         return res.status(500).json({ error: "Erro interno no servidor." });
     }
 };
-

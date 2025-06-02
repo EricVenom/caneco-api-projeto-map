@@ -1,4 +1,5 @@
 import pool from "../services/db.js";
+import { formatarCPF } from "../utils/validators.js";
 
 const cadastrarCliente = async (req, res) => {
     const { cpf, first_name, last_name } = req.body;
@@ -8,7 +9,7 @@ const cadastrarCliente = async (req, res) => {
             error: "Todos os campos são obrigatórios."
         })
     }
-
+    const cpfFormatado = formatarCPF(cpf)
     try {
         const query = `
             INSERT INTO tb_costumer (cpf, first_name, last_name)
@@ -16,7 +17,7 @@ const cadastrarCliente = async (req, res) => {
             RETURNING *;
         `
 
-        const values = [cpf, first_name, last_name]
+        const values = [cpfFormatado, first_name, last_name]
         const result = await pool.query(query, values)
 
         res.status(201).json({
