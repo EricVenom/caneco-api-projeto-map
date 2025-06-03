@@ -1,7 +1,7 @@
 import pool from '../services/db.js';
 import { v4 as uuidv4 } from 'uuid';
 import { calcularPrecoOriginal, aplicarDescontoParaClientesCadastrados } from '../utils/checkout_util.js';
-import {formatarCPF} from '../utils/validators.js';
+import { formatarCPF } from '../utils/validators.js';
 
 export const realizarCheckout = async (req, res) => {
     const { costumer_cpf, items } = req.body;
@@ -26,7 +26,7 @@ export const realizarCheckout = async (req, res) => {
 
         const calcularPrecoComDesconto = aplicarDescontoParaClientesCadastrados(calcularPrecoOriginal);
 
-        const cpfFormatado = await formatarCPF(costumer_cpf)
+        const cpfFormatado = formatarCPF(costumer_cpf)
         const totalPrice = await calcularPrecoComDesconto(client, items, cpfFormatado);
 
         let cpfValido = null;
@@ -76,7 +76,7 @@ export const realizarCheckout = async (req, res) => {
         return res.status(200).json({
             message: 'Compra realizada com sucesso.',
             checkout_code: checkoutCode
-    });
+        });
 
 
     } catch (error) {

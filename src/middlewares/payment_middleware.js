@@ -1,5 +1,3 @@
-import pool from '../services/db.js';
-
 export const conferirPagamento = async (req, res, next) => {
     const { checkout_code } = req.params;
     const { pagamentos } = req.body;
@@ -28,15 +26,6 @@ export const conferirPagamento = async (req, res, next) => {
         );
 
         if (somaPagamentos < totalPrice) {
-            await client.query(
-                `
-                UPDATE tb_payment 
-                SET payment_status = 'CANCELADO' 
-                WHERE checkout_code = $1 AND payment_status != 'CANCELADO'
-                `,
-                [checkout_code]
-            );
-
             return res.status(400).json({
                 message: `Valor insuficiente. Pagamento cancelado. Total necessário: ${totalPrice}.`
             });
