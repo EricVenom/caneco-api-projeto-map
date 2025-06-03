@@ -73,10 +73,11 @@ export const realizarCheckout = async (req, res) => {
 
         await client.query('COMMIT');
 
-        return res.json({
-            total_price: totalPrice,
-            cpf: cpfValido
-        });
+        return res.status(200).json({
+            message: 'Compra realizada com sucesso.',
+            checkout_code: checkoutCode
+    });
+
 
     } catch (error) {
         await client.query('ROLLBACK');

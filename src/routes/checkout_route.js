@@ -27,27 +27,25 @@ const router = Router();
  *           schema:
  *             type: object
  *             properties:
- *               cliente_id:
+ *               costumer_cpf:
  *                 type: integer
- *                 example: 123
+ *                 example: 33333333333
  *               itens:
  *                 type: array
  *                 items:
  *                   type: object
  *                   properties:
- *                     produto_id:
- *                       type: integer
- *                       example: 456
- *                     quantidade:
+ *                     id_product:
  *                       type: integer
  *                       example: 2
+ *                     quantity:
+ *                       type: integer
+ *                       example: 7
  *     responses:
- *       201:
+ *       200:
  *         description: Checkout realizado com sucesso.
- *       400:
- *         description: Dados inválidos.
- *       401:
- *         description: Não autorizado.
+ *       500:
+ *         description: Erro ao realizar checkout.
  */
 
 router.post("/checkout/realizar-checkout", autenticarToken, realizarCheckout);
