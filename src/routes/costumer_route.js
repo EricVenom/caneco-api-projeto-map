@@ -5,11 +5,18 @@ const router = Router();
 
 /**
  * @swagger
+ * tags:
+ *   name: Costumer
+ *   description: Operações relacionadas aos clientes
+ */
+
+/**
+ * @swagger
  * /cadastrar-cliente:
  *   post:
  *     summary: Cadastra um novo cliente
  *     tags:
- *       - Clientes
+ *       - Costumer
  *     requestBody:
  *       required: true
  *       content:
