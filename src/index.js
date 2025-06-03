@@ -10,6 +10,7 @@ dotenv.config();
 
 const app = express()
 const port = 3000
+const server = swaggerSpec.servers?.[0].url
 
 app.use(json());
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
@@ -21,5 +22,5 @@ app.use("/", adminRoute);
 
 app.listen(port, () => {
     console.log(`App está executando na porta ${port}.`)
-    console.log(`Documentação disponível em http://localhost:${port}/api-docs`);
+    console.log(`Documentação disponível em ${server}/api-docs`);
 })
