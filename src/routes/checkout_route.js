@@ -13,6 +13,13 @@ const router = Router();
 
 /**
  * @swagger
+ * tags:
+ *   name: Checkout
+ *   description: Operações relacionadas a compras
+ */
+
+/**
+ * @swagger
  * /checkout/realizar-checkout:
  *   post:
  *     summary: Realiza um novo checkout
@@ -43,7 +50,7 @@ const router = Router();
  *                       example: 7
  *     responses:
  *       200:
- *         description: Checkout realizado com sucesso.
+ *         description: Compra realizada com sucesso.
  *       500:
  *         description: Erro ao realizar checkout.
  */
@@ -81,11 +88,9 @@ router.post("/checkout/realizar-checkout", autenticarToken, realizarCheckout);
  *                 example: 99.99
  *     responses:
  *       200:
- *         description: Pagamento processado com sucesso.
- *       400:
- *         description: Erro ao processar pagamento.
- *       401:
- *         description: Não autorizado.
+ *         description: Pagamento realizado com sucesso.
+ *       500:
+ *         description: Erro no processamento do pagamento.
  */
 
 router.post("/checkout/realizar-pagamento/:checkout_code", autenticarToken, conferirPagamento, processarPagamento);
@@ -102,8 +107,8 @@ router.post("/checkout/realizar-pagamento/:checkout_code", autenticarToken, conf
  *     responses:
  *       200:
  *         description: Lista de vendas retornada com sucesso.
- *       401:
- *         description: Não autorizado.
+ *       500:
+ *         description: Erro ao buscar histórico de vendas.
  */
 
 router.get("/checkout/mostrar-historico", autenticarToken, mostrarHistoricoVendas);
@@ -128,9 +133,9 @@ router.get("/checkout/mostrar-historico", autenticarToken, mostrarHistoricoVenda
  *       200:
  *         description: Nota fiscal emitida com sucesso.
  *       404:
- *         description: Checkout não encontrado.
- *       401:
- *         description: Não autorizado.
+ *         description: Nota fiscal não encontrada para o código de checkout informado.
+ *       500:
+ *         description: Erro ao emitir nota fiscal.
  */
 
 router.get("/checkout/emitir-nota/:checkout_code", autenticarToken, emitirNotaFiscal);

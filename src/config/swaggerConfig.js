@@ -1,5 +1,7 @@
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const options = {
   definition: {
@@ -11,7 +13,7 @@ const options = {
     },
     servers: [
       {
-        url: 'https://caneco-api-projeto-map.onrender.com',
+        url: process.env.BASE_URL
       },
     ],
     components: {
