@@ -125,9 +125,22 @@ export const processarPagamento = async (req, res) => {
 export const mostrarHistoricoVendas = async (req, res) => {
     try {
         const query = `
-            SELECT * FROM tb_checkout
-            ORDER BY concat(sale_year, sale_month, sale_day, sale_hour, sale_minute) DESC
-            LIMIT 20
+            WITH tb_pagos AS (
+    SELECT * 
+    FROM tb_payment
+    WHERE payment_status = 'FINALIZADO'
+) 
+    SELECT ch.*, p.payment_status
+    FROM tb_checkout AS ch
+    INNER JOIN tb_pagos AS p ON ch.checkout_code = p.checkout_code
+    ORDER BY concat(
+        ch.sale_year, 
+        lpad(ch.sale_month::text, 2, '0'), 
+        lpad(ch.sale_day::text, 2, '0'), 
+        lpad(ch.sale_hour::text, 2, '0'), 
+        lpad(ch.sale_minute::text, 2, '0')
+    ) DESC
+    LIMIT 20;
         `;
         const { rows } = await pool.query(query);
         return res.status(200).json(rows);
