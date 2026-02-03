@@ -65,13 +65,15 @@ router.post("/admin/cadastrar-operador", cadastrarNovoOperador);
  *           schema:
  *             type: object
  *             required:
- *               - nome
- *               - senha
+ *               - cpf
+ *               - password
  *             properties:
- *               nome:
+ *               cpf:
  *                 type: string
- *                 example: operador1
- *               senha:
+ *                 example: "12345678900"
+ *               password:
+ *                 type: string
+ *                 example: "senha123"
  *                 type: string
  *                 example: senha123
  *     responses:
