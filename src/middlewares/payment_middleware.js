@@ -1,3 +1,5 @@
+import pool from '../services/db.js';
+
 export const conferirPagamento = async (req, res, next) => {
     const { checkout_code } = req.params;
     const { pagamentos } = req.body;
