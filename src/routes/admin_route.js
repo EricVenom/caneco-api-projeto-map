@@ -31,12 +31,12 @@ const router = Router();
  *           schema:
  *             type: object
  *             required:
- *               - nome
- *               - senha
+ *               - CPF
+ *               - Password
  *             properties:
  *               nome:
  *                 type: string
- *                 example: operador1
+ *                 example: 12345678910
  *               senha:
  *                 type: string
  *                 example: senha123
@@ -70,12 +70,10 @@ router.post("/admin/cadastrar-operador", cadastrarNovoOperador);
  *             properties:
  *               cpf:
  *                 type: string
- *                 example: "12345678900"
+ *                 example: "12345678910"
  *               password:
  *                 type: string
  *                 example: "senha123"
- *                 type: string
- *                 example: senha123
  *     responses:
  *       200:
  *         description: Autenticado com sucesso.
