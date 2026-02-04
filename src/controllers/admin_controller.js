@@ -10,7 +10,7 @@ const senhaJwt = process.env.JWT_PASSWORD;
 export const cadastrarNovoOperador = async (req, res) => {
     const { cpf, password, first_name } = req.body;
     if (!cpf || !password || !first_name) {
-        return res.status(401).json({ error: "Todos os campos devem ser preenchidos." });
+        return res.status(400).json({ error: "Todos os campos devem ser preenchidos." });
     }
 
     const cpfFormatado = formatarCPF(cpf)
@@ -37,7 +37,7 @@ export const cadastrarNovoOperador = async (req, res) => {
 export const logarOperador = async (req, res) => {
     const { cpf, password } = req.body;
     if (!cpf || !password) {
-        return res.status(401).json({ error: "É preciso preencher todos os campos." })
+        return res.status(400).json({ error: "É preciso preencher todos os campos." })
     }
 
     const cpfFormatado = formatarCPF(cpf)
