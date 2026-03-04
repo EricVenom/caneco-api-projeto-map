@@ -31,15 +31,19 @@ const router = Router();
  *           schema:
  *             type: object
  *             required:
- *               - nome
- *               - senha
+ *               - cpf
+ *               - password
+ *               - first_name
  *             properties:
- *               nome:
+ *               cpf:
  *                 type: string
- *                 example: operador1
- *               senha:
+ *                 example: 222.222.222-22
+ *               password:
  *                 type: string
- *                 example: senha123
+ *                 example: 123
+ *               first_name:
+ *                 type: string
+ *                 example: "João"
  *     responses:
  *       201:
  *         description: Operador cadastrado com sucesso.
@@ -70,23 +74,13 @@ router.post("/admin/cadastrar-operador", cadastrarNovoOperador);
  *             properties:
  *               cpf:
  *                 type: string
- *                 example: "12345678900"
+ *                 example: "222.222.222-22"
  *               password:
  *                 type: string
- *                 example: "senha123"
- *                 type: string
- *                 example: senha123
+ *                 example: "123"
  *     responses:
  *       200:
  *         description: Autenticado com sucesso.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 token:
- *                   type: string
- *                   example: "eyJhbGciOiJIUzI1NiIsInR5..."
  *       401:
  *         description: Credenciais inválidas.
  *       404:
