@@ -6,7 +6,6 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 .pnpm-debug.log*
-pnpm-debug.log*
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
@@ -42,6 +41,8 @@ build/Release
 # Dependency directories
 node_modules/
 jspm_packages/
+
+# Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
 
 # TypeScript cache
@@ -77,7 +78,6 @@ web_modules/
 .env.test.local
 .env.production.local
 .env.local
-*.local
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
@@ -90,18 +90,24 @@ out
 # Nuxt.js build / generate output
 .nuxt
 dist
-dist-ssr
 
 # Gatsby files
-# .cache/ (já coberto acima)
-# public (comente se usar Gatsby)
+.cache/
+# Comment in the public line in if your project uses Gatsby and not Next.js
+# https://nextjs.org/blog/next-9-1#public-directory-support
+# public
 
 # vuepress build output
 .vuepress/dist
+
+# vuepress v2.x temp and cache directory
 .temp
+.cache
 
 # vitepress build output
 **/.vitepress/dist
+
+# vitepress cache directory
 **/.vitepress/cache
 
 # Docusaurus cache and generated files
@@ -119,21 +125,12 @@ dist-ssr
 # TernJS port file
 .tern-port
 
+# Stores VSCode versions used for testing VSCode extensions
+.vscode-test
+
 # yarn v2
 .yarn/cache
 .yarn/unplugged
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.vscode-test
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
