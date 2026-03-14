@@ -1,6 +1,10 @@
-import { Router } from 'express';
+import { Router } from "express";
 import { autenticarToken } from "../middlewares/auth_middleware.js";
-import { listarCategorias, listarProdutosPorCategoria } from '../controllers/category_controller.js';
+import {
+  listarCategorias,
+  listarProdutosPorCategoria,
+  listarProdutosPorNomeCategoria,
+} from "../controllers/category_controller.js";
 
 const router = Router();
 
@@ -83,6 +87,59 @@ router.get("/listar-categorias", autenticarToken, listarCategorias);
  *         description: Erro interno ao buscar produtos.
  */
 
-router.get("/listar-produtos/:id_categoria/", autenticarToken, listarProdutosPorCategoria);
+router.get(
+  "/listar-produtos/:id_categoria/",
+  autenticarToken,
+  listarProdutosPorCategoria,
+);
+
+/**
+ * @swagger
+ * /listar-produtos-por-nome/{nome_categoria}:
+ *   get:
+ *     summary: Lista os produtos de uma categoria específica pelo nome
+ *     tags:
+ *       - Categorias
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: nome_categoria
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Nome da categoria desejada
+ *         example: Bebidas
+ *     responses:
+ *       200:
+ *         description: Lista de produtos da categoria.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                     example: 10
+ *                   nome:
+ *                     type: string
+ *                     example: Coca-Cola 2L
+ *                   preco:
+ *                     type: number
+ *                     format: float
+ *                     example: 7.99
+ *       404:
+ *         description: Nenhum produto nessa categoria.
+ *       500:
+ *         description: Erro interno ao buscar produtos.
+ */
+
+router.get(
+  "/listar-produtos-por-nome/:nome_categoria/",
+  autenticarToken,
+  listarProdutosPorNomeCategoria,
+);
 
 export default router;

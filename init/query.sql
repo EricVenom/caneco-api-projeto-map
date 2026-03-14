@@ -64,7 +64,13 @@ VALUES
 ('hortifruti'), 
 ('padaria'), 
 ('kids'), 
-('limpeza');
+('limpeza'),
+('refrigerantes'),
+('alcoolicas'),
+('sucos'),
+('achocolatados')
+('energeticos')
+('diversos');
 
 -- Bebidas (1)
 INSERT INTO tb_product (name, category, price) VALUES
@@ -143,3 +149,81 @@ INSERT INTO tb_product (name, category, price) VALUES
 ('Sabão em Barra', 6, 4.30),
 ('Amaciante', 6, 10.50),
 ('Pano de Chão', 6, 3.00);
+
+-- Refrigerantes (7)
+INSERT INTO tb_product (name, category, price) VALUES
+('Refrigerante Cola', 7, 6.90),
+('Refrigerante Guaraná', 7, 6.50),
+('Refrigerante Laranja', 7, 6.80),
+('Refrigerante Uva', 7, 7.20),
+('Refrigerante Limão', 7, 6.70),
+('Refrigerante Abacaxi', 7, 6.90),
+('Refrigerante Morango', 7, 7.00),
+('Refrigerante Maracujá', 7, 6.80),
+('Refrigerante Pêssego', 7, 6.90),
+('Refrigerante Frutas Vermelhas', 7, 7.10);
+
+-- Alcoólicas (8)
+INSERT INTO tb_product (name, category, price) VALUES
+('Cerveja Pilsen', 8, 4.80),
+('Vinho Tinto', 8, 35.00),
+('Vodka', 8, 25.00),
+('Whisky', 8, 120.00),
+('Cachaça', 8, 15.00),
+('Rum', 8, 30.00),
+('Tequila', 8, 50.00),
+('Licor', 8, 20.00),
+('Champanhe', 8, 80.00),
+('Gin', 8, 40.00);
+
+-- Sucos (9)
+INSERT INTO tb_product (name, category, price) VALUES
+('Suco de Laranja', 9, 7.50),
+('Suco de Uva', 9, 7.90),
+('Suco de Abacaxi', 9, 6.80),
+('Suco de Maracujá', 9, 6.90),
+('Suco de Morango', 9, 7.20),
+('Suco de Limão', 9, 6.70),
+('Suco de Manga', 9, 7.00),
+('Suco de Melancia', 9, 7.50),
+('Suco de Acerola', 9, 6.80),
+('Suco de Caju', 9, 7.10);
+
+-- Achocolatados (10)
+INSERT INTO tb_product (name, category, price) VALUES
+('Achocolatado em Pó', 10, 3.80),
+('Achocolatado Líquido', 10, 4.50),
+('Achocolatado Zero Açúcar', 10, 4.20),
+('Achocolatado com Café', 10, 5.00),
+('Achocolatado com Baunilha', 10, 4.80),
+('Achocolatado com Caramelo', 10, 5.20),
+('Achocolatado com Avelã', 10, 5.50),
+('Achocolatado com Coco', 10, 4.90),
+('Achocolatado com Amêndoas', 10, 5.30),
+('Achocolatado com Castanha de Caju', 10, 5.60);
+
+-- Energéticos (11)
+INSERT INTO tb_product (name, category, price) VALUES
+('Energético', 11, 9.90),
+('Energético Zero Açúcar', 11, 10.50),
+('Energético com Guaraná', 11, 9.80),
+('Energético com Taurina', 11, 10.20),
+('Energético com Cafeína', 11, 9.70),
+('Energético com Ginseng', 11, 10.00),
+('Energético com Vitaminas', 11, 9.90),
+('Energético com Açúcar Mascavo', 11, 10.30),
+('Energético com Mel', 11, 9.80),
+('Energético com Açaí', 11, 10.40);
+
+--Diversos bebidas (12)
+INSERT INTO tb_product (name, category, price) VALUES
+('Água Mineral', 12, 2.50),
+('Refrigerante Cola', 12, 6.90),
+('Suco de Laranja', 12, 7.50),
+('Cerveja Pilsen', 12, 4.80),
+('Energético', 12, 9.90),
+('Vinho Tinto', 12, 35.00),
+('Café Solúvel', 12, 8.20),
+('Chá Verde', 12, 5.50),
+('Refrigerante Guaraná', 12, 6.50),
+('Suco de Uva', 12, 7.90);
