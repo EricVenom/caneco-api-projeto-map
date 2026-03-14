@@ -5,7 +5,8 @@ import {
     logarOperador,
     mostrarInfoOperador,
     adicionarSaldoCaixa,
-    substrairSaldoCaixa
+    substrairSaldoCaixa,
+    getNameOperador
 } from "../controllers/admin_controller.js";
 
 const router = Router();
@@ -166,5 +167,25 @@ router.put("/admin/adicionar-saldo", autenticarToken, adicionarSaldoCaixa);
  */
 
 router.put("/admin/subtrair-saldo", autenticarToken, substrairSaldoCaixa);
+
+/**
+ * @swagger
+ * /admin/nome-operador:
+ *   get:
+ *     summary: Retorna o nome do operador autenticado
+ *     tags:
+ *       - Administrador
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Nome do operador retornado com sucesso.
+ *       401:
+ *         description: Acesso negado.
+ *       403:
+ *         description: Token inválido.
+ */
+
+router.get("/admin/nome-operador", autenticarToken, getNameOperador);
 
 export default router;

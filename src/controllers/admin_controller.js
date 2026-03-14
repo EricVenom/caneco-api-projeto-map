@@ -141,3 +141,10 @@ export const substrairSaldoCaixa = async (req, res) => {
         return res.status(500).json({ error: "Erro interno no servidor." });
     }
 };
+
+export const getNameOperador = async (req, res) => {
+    const { first_name } = req.user;
+    console.log("Nome do operador autenticado:", first_name);
+    return res.status(200).json({ name: first_name });
+};
+ 
