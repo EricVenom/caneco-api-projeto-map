@@ -125,25 +125,64 @@ export const processarPagamento = async (req, res) => {
 
 export const mostrarHistoricoVendas = async (req, res) => {
     try {
+        const { data_inicial, data_final } = req.query;
+
+        const hasInicial = typeof data_inicial === 'string' && data_inicial.trim().length > 0;
+        const hasFinal = typeof data_final === 'string' && data_final.trim().length > 0;
+
+        // Espera formato ISO do input date: YYYY-MM-DD
+        const isoDateRegex = /^\d{4}-\d{2}-\d{2}$/;
+        if (hasInicial && !isoDateRegex.test(data_inicial.trim())) {
+            return res.status(400).json({ message: 'data_inicial inválida. Use YYYY-MM-DD.' });
+        }
+        if (hasFinal && !isoDateRegex.test(data_final.trim())) {
+            return res.status(400).json({ message: 'data_final inválida. Use YYYY-MM-DD.' });
+        }
+
+        const params = [];
+        let whereDate = '';
+
+        if (hasInicial && hasFinal) {
+            params.push(data_inicial.trim(), data_final.trim());
+            whereDate = `
+                WHERE make_date(ch.sale_year::int, ch.sale_month::int, ch.sale_day::int)
+                  BETWEEN $1::date AND $2::date
+            `;
+        } else if (hasInicial) {
+            params.push(data_inicial.trim());
+            whereDate = `
+                WHERE make_date(ch.sale_year::int, ch.sale_month::int, ch.sale_day::int)
+                  >= $1::date
+            `;
+        } else if (hasFinal) {
+            params.push(data_final.trim());
+            whereDate = `
+                WHERE make_date(ch.sale_year::int, ch.sale_month::int, ch.sale_day::int)
+                  <= $1::date
+            `;
+        }
+
         const query = `
             WITH tb_pagos AS (
-    SELECT * 
-    FROM tb_payment
-    WHERE payment_status = 'FINALIZADO'
-) 
-    SELECT ch.*, p.payment_status
-    FROM tb_checkout AS ch
-    INNER JOIN tb_pagos AS p ON ch.checkout_code = p.checkout_code
-    ORDER BY concat(
-        ch.sale_year, 
-        lpad(ch.sale_month::text, 2, '0'), 
-        lpad(ch.sale_day::text, 2, '0'), 
-        lpad(ch.sale_hour::text, 2, '0'), 
-        lpad(ch.sale_minute::text, 2, '0')
-    ) DESC
-    LIMIT 20;
+                SELECT *
+                FROM tb_payment
+                WHERE payment_status = 'FINALIZADO'
+            )
+            SELECT ch.*, p.payment_status
+            FROM tb_checkout AS ch
+            INNER JOIN tb_pagos AS p ON ch.checkout_code = p.checkout_code
+            ${whereDate}
+            ORDER BY concat(
+                ch.sale_year,
+                lpad(ch.sale_month::text, 2, '0'),
+                lpad(ch.sale_day::text, 2, '0'),
+                lpad(ch.sale_hour::text, 2, '0'),
+                lpad(ch.sale_minute::text, 2, '0')
+            ) DESC
+            LIMIT 20;
         `;
-        const { rows } = await pool.query(query);
+
+        const { rows } = await pool.query(query, params);
         return res.status(200).json(rows);
     } catch (error) {
         console.error('Erro ao buscar histórico de vendas:', error);
