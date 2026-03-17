@@ -24,7 +24,7 @@ export const aplicarDescontoParaClientesCadastrados = (calcularPrecoFn) => {
                 [costumer_cpf]
             );
             if (result.rows.length !== 0) {
-                total *= 0.95;
+                total *= 0.90;
             }
         }
 
