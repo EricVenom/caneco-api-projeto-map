@@ -33,12 +33,6 @@ export const conferirPagamento = async (req, res, next) => {
             });
         }
 
-        if (somaPagamentos > totalPrice) {
-            return res.status(400).json({
-                message: `Valor excedente. Você deve pagar exatamente ${totalPrice}.`
-            });
-        }
-
         next();
 
     } catch (error) {
