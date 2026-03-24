@@ -26,11 +26,11 @@ const cadastrarCliente = async (req, res) => {
         })
     } catch (error) {
         if (error.code === "23505") {
-            return res.status(400).json({ falha: "CPF já cadastrado." })
+            return res.status(400).json({ error: "CPF já cadastrado." })
         }
 
         console.error(error)
-        res.status(500).json({ falha: "Erro ao cadastrar cliente." })
+        res.status(500).json({ error: "Erro ao cadastrar cliente." })
     }
 }
 

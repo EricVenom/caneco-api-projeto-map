@@ -48,12 +48,12 @@ export const logarOperador = async (req, res) => {
         `
         const { rows: [cashier] } = await pool.query(query, [cpfFormatado]);
         if (!cashier) {
-            res.status(404).json({ message: "Usuário não encontrado." })
+            res.status(404).json({ error: "Usuário não encontrado." })
         }
 
         const senhaDecriptada = await bcrypt.compare(password, cashier.password);
         if (!senhaDecriptada) {
-            res.status(401).json({ message: "Senha incorreta." })
+            res.status(401).json({ error: "Usuário ou senha incorretos." })
         }
 
         const token = jwt.sign({

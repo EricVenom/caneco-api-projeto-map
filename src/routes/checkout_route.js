@@ -4,7 +4,8 @@ import {
     realizarCheckout,
     processarPagamento,
     mostrarHistoricoVendas,
-    emitirNotaFiscal
+    emitirNotaFiscal,
+    verificarCPF
 } from '../controllers/checkout_controller.js';
 
 import { conferirPagamento } from '../middlewares/payment_middleware.js';
@@ -139,5 +140,7 @@ router.get("/checkout/mostrar-historico", autenticarToken, mostrarHistoricoVenda
  */
 
 router.get("/checkout/emitir-nota/:checkout_code", autenticarToken, emitirNotaFiscal);
+
+router.get("/checkout/verificarCpf/:cpf", verificarCPF);
 
 export default router;

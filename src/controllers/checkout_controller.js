@@ -3,6 +3,39 @@ import { v4 as uuidv4 } from 'uuid';
 import { calcularPrecoOriginal, aplicarDescontoParaClientesCadastrados } from '../utils/checkout_util.js';
 import { formatarCPF } from '../utils/validators.js';
 
+export const verificarCPF = async (req, res) => {
+    try {
+        const client = await pool.connect();
+        await client.query('BEGIN');
+        const { cpf } = req.params;
+
+        if (cpf) {
+            const { rows } = await client.query(
+                'SELECT cpf FROM tb_costumer WHERE cpf = $1',
+                [cpf]
+            );
+            await client.query('COMMIT');
+
+            if (rows.length > 0) {
+                const cpfCadastrado = rows[0].cpf;
+                return res.status(200).json({ cpf: cpfCadastrado });
+            }
+                else {
+                return res.status(404).json({ message: 'CPF não encontrado.' });
+            }
+            
+        }
+        else{
+            return res.status(400).json({ message: 'CPF não fornecido.' });
+        }
+        
+    } catch (error) {
+        console.error('Erro ao verificar CPF:', error);
+        return res.status(500).json({ message: 'Erro ao verificar CPF.' });
+    };
+};
+
+
 export const realizarCheckout = async (req, res) => {
     const { costumer_cpf, items } = req.body;
 
@@ -130,7 +163,6 @@ export const mostrarHistoricoVendas = async (req, res) => {
         const hasInicial = typeof data_inicial === 'string' && data_inicial.trim().length > 0;
         const hasFinal = typeof data_final === 'string' && data_final.trim().length > 0;
 
-        // Espera formato ISO do input date: YYYY-MM-DD
         const isoDateRegex = /^\d{4}-\d{2}-\d{2}$/;
         if (hasInicial && !isoDateRegex.test(data_inicial.trim())) {
             return res.status(400).json({ message: 'data_inicial inválida. Use YYYY-MM-DD.' });
